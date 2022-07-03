@@ -70,6 +70,62 @@ app.route("/articles")
   });
 
 
+//******************************REQUEST FOR THE SPECIFIC ARTICLE IN THE urlencoded
+
+app.route("/articles/:articleTitle")
+
+.get(function(req, res){
+    Article.findOne({title: req.params.articleTitle}, function(err, foundArticle){
+      if(foundArticle){
+      res.send(foundArticle);
+      } else {
+    res.send("Sorry! Not present");
+    }
+    });
+  }) //this semicolon is not closed
+
+
+.put(function(req, res){
+  Article.updateOne(
+    {title: req.params.articleTitle},
+    {title: req.body.title, content: req.body.content},
+    function(err){
+      if(!err){
+        res.send("Updated Successfully");
+      }
+    }
+  );
+})
+//this will Update the particluar title we will search into it
+
+
+.patch(function(req, res){
+  Article.updateOne(
+    {title: req.params.articleTitle},
+    {$set: req.body}, //this is a new parameter we have gone through, read about it, it says that read though the body and whatever is there only update thats
+    function(err){
+      if(!err){
+        res.send("Specific field updated Successfully");
+      } else {
+        res.send(err);
+      }
+    }
+  );
+})
+
+.delete(function(req, res){
+  Article.deleteOne(
+    {title: req.params.articleTitle},
+    function(err){
+      if(!err){
+        res.send("Deleted Successfully");
+      } else {
+        res.send(err);
+      }
+    }
+  );
+});
+
 app.listen(3000, function(){
   console.log("Port is running on 3000");
 });
